@@ -7,30 +7,33 @@
     <style>
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
-            background-color: #050505; display: flex;
+            background-color: #111; display: flex;
             justify-content: center; align-items: center; overflow: hidden;
         }
-        iframe {
-            width: 100%; height: 100%; max-width: 960px; max-height: 720px;
-            border: 4px solid #222; border-radius: 8px; box-shadow: 0px 10px 30px rgba(0,0,0,0.7);
+        canvas {
+            width: 100%; height: 100%; max-width: 800px; max-height: 600px;
+            background-color: #000; image-rendering: pixelated;
         }
     </style>
 </head>
 <body>
 
-    <iframe id="arcade-frame" allow="autoplay; gamepad" src=""></iframe>
+    <canvas id="canvas" oncontextmenu="event.preventDefault()"></canvas>
 
     <script>
-        // Find exactly where your GitHub page is running
-        const repoUrl = window.location.origin + window.location.pathname.replace('index.html', '');
-        
-        const gameFile = repoUrl + 'mygame.bin';
-        const biosFile = repoUrl + 'o2rom.bin';
-
-        // Direct injection into an open web-emulation wrapper that supports O2EM
-        document.getElementById('arcade-frame').src = 
-            `https://gama.one/retroarch-web/?core=o2em&rom=${encodeURIComponent(gameFile)}&bios=${encodeURIComponent(biosFile)}`;
+        // Setup configuration for the local emulator core
+        var Module = {
+            noInitialRun: false,
+            arguments: ["/mygame.bin"], 
+            canvas: document.getElementById('canvas'),
+            preRun: [function() {
+                // Read files natively from your own GitHub root directory
+                FS.createPreloadedFile('/', 'mygame.bin', 'mygame.bin', true, false);
+                FS.mkdir('/system');
+                FS.createPreloadedFile('/system', 'o2rom.bin', 'o2rom.bin', true, false);
+            }]
+        };
     </script>
-
+    <script async src="cores/o2em_libretro.js"></script>
 </body>
 </html>
