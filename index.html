@@ -3,44 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Magnavox Odyssey² Online</title>
+    <title>Magnavox Odyssey² Arcade</title>
     <style>
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
-            background-color: #111; display: flex;
+            background-color: #050505; display: flex;
             justify-content: center; align-items: center; overflow: hidden;
-            font-family: Arial, sans-serif; color: #fff;
-        }
-        #emulator-container {
-            width: 100%; height: 100%; max-width: 800px; max-height: 600px;
-            position: relative;
         }
         iframe {
-            width: 100%; height: 100%; border: none;
+            width: 100%; height: 100%; max-width: 960px; max-height: 720px;
+            border: 4px solid #222; border-radius: 8px; box-shadow: 0px 10px 30px rgba(0,0,0,0.7);
         }
     </style>
 </head>
 <body>
 
-    <div id="emulator-container">
-        <!-- The emulator loads securely inside an iframe pointing to a verified web-runtime engine -->
-        <iframe id="game-frame" src=""></iframe>
-    </div>
+    <iframe id="arcade-frame" allow="autoplay; gamepad" src=""></iframe>
 
     <script>
-        // Dynamically build the paths based on your GitHub Pages current location
-        const currentOrigin = window.location.origin + window.location.pathname.replace('index.html', '');
+        // Find exactly where your GitHub page is running
+        const repoUrl = window.location.origin + window.location.pathname.replace('index.html', '');
         
-        // Point exactly to the filenames currently in your root folder
-        const gameUrl = encodeURIComponent(currentOrigin + 'mygame.bin');
-        const biosUrl = encodeURIComponent(currentOrigin + 'o2rom.bin');
+        const gameFile = repoUrl + 'mygame.bin';
+        const biosFile = repoUrl + 'o2rom.bin';
 
-        // We embed a dedicated, pre-compiled WebAssembly container framework
-        // This injects your specific game and BIOS files straight into the O2EM core engine
-        const emulatorUrl = `https://emupedia.net/emulators/retroarch/?core=o2em&rom=${gameUrl}&bios=${biosUrl}`;
-
-        // Load it up!
-        document.getElementById('game-frame').src = emulatorUrl;
+        // Direct injection into an open web-emulation wrapper that supports O2EM
+        document.getElementById('arcade-frame').src = 
+            `https://gama.one/retroarch-web/?core=o2em&rom=${encodeURIComponent(gameFile)}&bios=${encodeURIComponent(biosFile)}`;
     </script>
 
 </body>
