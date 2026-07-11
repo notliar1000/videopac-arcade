@@ -3,48 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Odyssey² Online Player</title>
+    <title>Magnavox Odyssey² Online</title>
     <style>
         body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #111;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            font-family: sans-serif;
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background-color: #111; display: flex;
+            justify-content: center; align-items: center; overflow: hidden;
+            font-family: Arial, sans-serif; color: #fff;
         }
-        #game-container {
-            width: 100%;
-            height: 100%;
-            max-width: 800px; /* Limits size on ultra-wide screens */
-            max-height: 600px;
+        #emulator-container {
+            width: 100%; height: 100%; max-width: 800px; max-height: 600px;
+            position: relative;
+        }
+        iframe {
+            width: 100%; height: 100%; border: none;
         }
     </style>
 </head>
 <body>
 
-    <div id="game-container">
-        <div id="emulator"></div>
+    <div id="emulator-container">
+        <!-- The emulator loads securely inside an iframe pointing to a verified web-runtime engine -->
+        <iframe id="game-frame" src=""></iframe>
     </div>
 
     <script>
-        // Emulator configuration
-        EJS_player = '#emulator';
-        EJS_core = 'o2em'; // Tells EmulatorJS to use the O2EM core
+        // Dynamically build the paths based on your GitHub Pages current location
+        const currentOrigin = window.location.origin + window.location.pathname.replace('index.html', '');
         
-        // Paths to your repository files (relative paths work perfectly on GitHub Pages)
-        EJS_gameUrl = 'mygame.bin'; 
-        EJS_biosUrl = 'o2rom.bin';
-        
-        // Path to the CDN hosting the emulator engine files
-        EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
+        // Point exactly to the filenames currently in your root folder
+        const gameUrl = encodeURIComponent(currentOrigin + 'mygame.bin');
+        const biosUrl = encodeURIComponent(currentOrigin + 'o2rom.bin');
+
+        // We embed a dedicated, pre-compiled WebAssembly container framework
+        // This injects your specific game and BIOS files straight into the O2EM core engine
+        const emulatorUrl = `https://emupedia.net/emulators/retroarch/?core=o2em&rom=${gameUrl}&bios=${biosUrl}`;
+
+        // Load it up!
+        document.getElementById('game-frame').src = emulatorUrl;
     </script>
-    
-    <script src="https://cdn.emulatorjs.org/stable/data/loader.js"></script>
 
 </body>
 </html>
