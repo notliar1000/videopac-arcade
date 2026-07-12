@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magnavox Odyssey² Arcade</title>
+    <style>
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background-color: #0b0b0b; display: flex;
+            justify-content: center; align-items: center; overflow: hidden;
+        }
+        iframe {
+            width: 100%; height: 100%; max-width: 800px; max-height: 600px;
+            border: 3px solid #222; border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- A highly compatible emulator wrapper that handles O2EM natively -->
+    <iframe id="game-frame" allow="autoplay; gamepad" src=""></iframe>
+
+    <script>
+        // Find exactly where your GitHub page files live online
+        const repoRoot = window.location.origin + window.location.pathname.replace('index.html', '');
+        
+        const gameUrl = encodeURIComponent(repoRoot + 'mygame.bin');
+        const biosUrl = encodeURIComponent(repoRoot + 'o2rom.bin');
+
+        // Connect directly to the dedicated web-player container
+        document.getElementById('game-frame').src = 
+            `https://retrohub.github.io/player/?core=o2em&rom=${gameUrl}&bios=${biosUrl}`;
+    </script>
+
+</body>
+</html>
