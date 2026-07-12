@@ -7,33 +7,30 @@
     <style>
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
-            background-color: #111; display: flex;
+            background-color: #0c0c0c; display: flex;
             justify-content: center; align-items: center; overflow: hidden;
         }
-        canvas {
-            width: 100%; height: 100%; max-width: 800px; max-height: 600px;
-            background-color: #000; image-rendering: pixelated;
+        iframe {
+            width: 100%; height: 100%; max-width: 960px; max-height: 720px;
+            border: 2px solid #333; box-shadow: 0px 0px 20px rgba(0,0,0,0.8);
         }
     </style>
 </head>
 <body>
 
-    <canvas id="canvas" oncontextmenu="event.preventDefault()"></canvas>
+    <iframe id="retroarch-frame" allow="autoplay; gamepad" src=""></iframe>
 
     <script>
-        // Setup configuration for the local emulator core
-        var Module = {
-            noInitialRun: false,
-            arguments: ["/mygame.bin"], 
-            canvas: document.getElementById('canvas'),
-            preRun: [function() {
-                // Read files natively from your own GitHub root directory
-                FS.createPreloadedFile('/', 'mygame.bin', 'mygame.bin', true, false);
-                FS.mkdir('/system');
-                FS.createPreloadedFile('/system', 'o2rom.bin', 'o2rom.bin', true, false);
-            }]
-        };
+        // Pinpoint your files on GitHub Pages automatically
+        const baseUrl = window.location.origin + window.location.pathname.replace('index.html', '');
+        
+        const gameUrl = encodeURIComponent(baseUrl + 'mygame.bin');
+        const biosUrl = encodeURIComponent(baseUrl + 'o2rom.bin');
+
+        // Points straight to official RetroArch web infrastructure built specifically for this
+        document.getElementById('retroarch-frame').src = 
+            `https://web.libretro.com/?core=o2em&rom=${gameUrl}&bios=${biosUrl}`;
     </script>
-    <script async src="cores/o2em_libretro.js"></script>
+
 </body>
 </html>
