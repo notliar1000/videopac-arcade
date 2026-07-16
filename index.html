@@ -4,51 +4,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Magnavox Odyssey² Arcade</title>
-    
-    <!-- Include the highly compatible standalone web emulator bundle -->
-    <script src="https://cdn.jsdelivr.net/npm/nostalgia-emulator@latest/dist/nostalgia.js"></script>
-    
     <style>
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
             background-color: #0b0b0b; display: flex;
             justify-content: center; align-items: center; overflow: hidden;
-            font-family: sans-serif; color: #fff;
         }
         #emulator-container {
             width: 100%; height: 100%; max-width: 800px; max-height: 600px;
             background-color: #000; border: 3px solid #222; border-radius: 6px;
             box-shadow: 0px 10px 30px rgba(0,0,0,0.7);
         }
+        /* Ensure the emulator's inner canvas fits the box perfectly */
+        #emulator-container div {
+            width: 100% !important; height: 100% !important;
+        }
     </style>
 </head>
 <body>
 
-    <!-- This container holds the native game canvas element directly on your page -->
-    <div id="emulator-container"></div>
+    <div id="emulator-container">
+        <div id="game"></div>
+    </div>
 
     <script>
-        // Wait until the page completely finishes loading
-        window.addEventListener('DOMContentLoaded', () => {
-            
-            // Initialize Nostalgia configured for the Odyssey 2 / Videopac core (O2EM)
-            const emulator = new Nostalgia({
-                element: '#emulator-container',
-                core: 'o2em',
-                // Direct local file references - no cross-domain sharing blocks!
-                rom: 'mygame.bin',
-                bios: 'o2rom.bin',
-                options: {
-                    autoplay: true,
-                    controls: true
-                }
-            });
-
-            emulator.init().catch(err => {
-                console.error("Emulator failed to initialize: ", err);
-            });
-        });
+        // Set up the EmulatorJS player configuration
+        EJS_player = '#game';
+        EJS_gameUrl = 'mygame.bin'; // Local game path
+        EJS_biosUrl = 'o2rom.bin';  // Local BIOS path
+        EJS_core = 'o2em';          // Odyssey 2 / Videopac core
+        EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/'; // Stable CDN data package
+        EJS_startOnLoaded = true;
+        EJS_autoplay = true;
     </script>
+    
+    <!-- Load the main stable EmulatorJS loader library -->
+    <script src="https://cdn.emulatorjs.org/stable/data/loader.js"></script>
 
 </body>
 </html>
