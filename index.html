@@ -15,7 +15,6 @@
             background-color: #000; border: 3px solid #222; border-radius: 6px;
             box-shadow: 0px 10px 30px rgba(0,0,0,0.7);
         }
-        /* Ensure the emulator's inner canvas fits the box perfectly */
         #emulator-container div {
             width: 100% !important; height: 100% !important;
         }
@@ -28,17 +27,21 @@
     </div>
 
     <script>
-        // Set up the EmulatorJS player configuration
         EJS_player = '#game';
-        EJS_gameUrl = 'mygame.bin'; // Local game path
-        EJS_biosUrl = 'o2rom.bin';  // Local BIOS path
-        EJS_core = 'o2em';          // Odyssey 2 / Videopac core
-        EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/'; // Stable CDN data package
-        EJS_startOnLoaded = true;
-        EJS_autoplay = true;
+        EJS_gameUrl = 'mygame.bin'; 
+        EJS_biosUrl = 'o2rom.bin';  
+        
+        // Use 'odyssey2' which maps directly to the CDN's correct asset folders
+        EJS_gameSystem = 'odyssey2'; 
+        EJS_core = 'o2em';          
+        
+        EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/'; 
+        
+        // Show the start button on screen to ensure the browser allows audio and video to initialize
+        EJS_startOnLoaded = false; 
+        EJS_autoplay = false;
     </script>
     
-    <!-- Load the main stable EmulatorJS loader library -->
     <script src="https://cdn.emulatorjs.org/stable/data/loader.js"></script>
 
 </body>
