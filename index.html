@@ -4,33 +4,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Magnavox Odyssey² Arcade</title>
+    
+    <!-- Include the highly compatible standalone web emulator bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/nostalgia-emulator@latest/dist/nostalgia.js"></script>
+    
     <style>
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
             background-color: #0b0b0b; display: flex;
             justify-content: center; align-items: center; overflow: hidden;
+            font-family: sans-serif; color: #fff;
         }
-        iframe {
+        #emulator-container {
             width: 100%; height: 100%; max-width: 800px; max-height: 600px;
-            border: 3px solid #222; border-radius: 6px;
+            background-color: #000; border: 3px solid #222; border-radius: 6px;
+            box-shadow: 0px 10px 30px rgba(0,0,0,0.7);
         }
     </style>
 </head>
 <body>
 
-    <!-- A highly compatible emulator wrapper that handles O2EM natively -->
-    <iframe id="game-frame" allow="autoplay; gamepad" src=""></iframe>
+    <!-- This container holds the native game canvas element directly on your page -->
+    <div id="emulator-container"></div>
 
     <script>
-        // Find exactly where your GitHub page files live online
-        const repoRoot = window.location.origin + window.location.pathname.replace('index.html', '');
-        
-        const gameUrl = encodeURIComponent(repoRoot + 'mygame.bin');
-        const biosUrl = encodeURIComponent(repoRoot + 'o2rom.bin');
+        // Wait until the page completely finishes loading
+        window.addEventListener('DOMContentLoaded', () => {
+            
+            // Initialize Nostalgia configured for the Odyssey 2 / Videopac core (O2EM)
+            const emulator = new Nostalgia({
+                element: '#emulator-container',
+                core: 'o2em',
+                // Direct local file references - no cross-domain sharing blocks!
+                rom: 'mygame.bin',
+                bios: 'o2rom.bin',
+                options: {
+                    autoplay: true,
+                    controls: true
+                }
+            });
 
-        // Connect directly to the dedicated web-player container
-        document.getElementById('game-frame').src = 
-            `https://retrohub.github.io/player/?core=o2em&rom=${gameUrl}&bios=${biosUrl}`;
+            emulator.init().catch(err => {
+                console.error("Emulator failed to initialize: ", err);
+            });
+        });
     </script>
 
 </body>
