@@ -1,1 +1,0 @@
-https://gemini.google.com/app/d822dd76c623a39b?utm_source=deepmind.google&utm_medium=referral&utm_campaign=gdm&utm_content=#:~:text=https%3A//raw.githubusercontent.com/notliar1000/videopac%2Darcade/main/cores/o2em_libretro.js
