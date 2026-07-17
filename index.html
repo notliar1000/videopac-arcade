@@ -19,6 +19,8 @@
             width: 100% !important; height: 100% !important;
         }
     </style>
+    <!-- Include JSZip so we can bundle the BIOS files on the fly in the browser -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
 <body>
 
@@ -29,32 +31,55 @@
     <script>
         const path = window.location.origin + window.location.pathname.replace('index.html', '');
 
-        EJS_player = '#game';
-        EJS_gameUrl = path + 'mygame.bin'; 
-        EJS_gameSystem = 'odyssey2'; 
-        EJS_core = 'o2em';          
-        EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/'; 
-        
-        EJS_startOnLoaded = false; 
-        EJS_autoplay = false;
+        // 1. Download both BIOS files silently in the background
+        async function prepareBiosAndStart() {
+            try {
+                const [o2romRes, g7400Res] = await Promise.all([
+                    fetch(path + 'o2rom.bin'),
+                    fetch(path + 'g7400.bin')
+                ]);
 
-        // Force-virtualize both BIOS files into the emulator's system workspace
-        EJS_biosUrl = path + 'o2rom.bin';
-        EJS_biosName = 'o2rom.bin';
+                if (!o2romRes.ok || !g7400Res.ok) {
+                    throw new Error("Could not download BIOS files from repository.");
+                }
 
-        EJS_extraBios = [
-            {
-                url: path + 'g7400.bin',
-                name: 'g7400.bin'
-            },
-            {
-                url: path + 'o2rom.bin',
-                name: 'odyssey2.bin' // Some O2EM cores seek this alternate spelling
+                const o2romBlob = await o2romRes.blob();
+                const g7400Blob = await g7400Res.blob();
+
+                // 2. Packaging them into the virtual "odyssey2.zip" required by the core
+                const zip = new JSZip();
+                zip.file("o2rom.bin", o2romBlob);
+                zip.file("g7400.bin", g7400Blob);
+
+                const zippedBios = await zip.generateAsync({ type: "blob" });
+                const biosObjectURL = URL.createObjectURL(zippedBios);
+
+                // 3. Initialize EmulatorJS with our dynamically created BIOS ZIP
+                EJS_player = '#game';
+                EJS_gameUrl = path + 'mygame.bin'; 
+                EJS_gameSystem = 'odyssey2'; 
+                EJS_core = 'o2em';          
+                EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/'; 
+                
+                EJS_startOnLoaded = false; 
+                EJS_autoplay = false;
+
+                // Point the BIOS URL to the memory-generated ZIP file
+                EJS_biosUrl = biosObjectURL;
+
+                // Load the main EmulatorJS bootloader to start the game window
+                const loaderScript = document.createElement('script');
+                loaderScript.src = 'https://cdn.emulatorjs.org/stable/data/loader.js';
+                document.body.appendChild(loaderScript);
+
+            } catch (err) {
+                console.error("BIOS Virtual Packaging Failed: ", err);
             }
-        ];
+        }
+
+        // Run the script
+        prepareBiosAndStart();
     </script>
-    
-    <script src="https://cdn.emulatorjs.org/stable/data/loader.js"></script>
 
 </body>
 </html>
