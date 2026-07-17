@@ -29,17 +29,19 @@
     <script>
         EJS_player = '#game';
         EJS_gameUrl = 'mygame.bin'; 
+        
+        // This maps your local o2rom.bin directly to the required system folder
         EJS_biosUrl = 'o2rom.bin';  
         
-        // Use 'odyssey2' which maps directly to the CDN's correct asset folders
         EJS_gameSystem = 'odyssey2'; 
         EJS_core = 'o2em';          
-        
         EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/'; 
         
-        // Show the start button on screen to ensure the browser allows audio and video to initialize
         EJS_startOnLoaded = false; 
         EJS_autoplay = false;
+
+        // Force EmulatorJS to load the system BIOS explicitly into the virtual filesystem
+        EJS_biosName = 'o2rom.bin';
     </script>
     
     <script src="https://cdn.emulatorjs.org/stable/data/loader.js"></script>
